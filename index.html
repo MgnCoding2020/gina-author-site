@@ -121,15 +121,8 @@
           </div>
         </div>
 
-        <!-- Series strip: companion title + upcoming book -->
-        <div class="series-strip">
-          <article class="series-card">
-            <div class="series-card-tag">Companion</div>
-            <h3 class="series-card-title">A Puppy for Selena &mdash; Coloring Book</h3>
-            <p class="series-card-desc">A hand-illustrated coloring companion to the picture book. Follow Selena and her puppy through every little act of love and care.</p>
-            <p class="series-card-meta">Published November 2025 &middot; Available on Amazon</p>
-            <a href="https://www.amazon.com/s?k=Gina+Saporito+coloring" target="_blank" rel="noopener" class="link-arrow">Find on Amazon &rarr;</a>
-          </article>
+        <!-- Coming next: Book 2 teaser -->
+        <div class="series-strip series-strip-single">
           <article class="series-card series-card-upcoming">
             <div class="series-card-tag series-card-tag-soon">Coming next</div>
             <h3 class="series-card-title">Selena and the Storm</h3>
@@ -174,20 +167,34 @@
 
         <div class="card-grid">
           <article class="card">
-            <div class="card-image">
+            <button type="button" class="card-image card-preview-trigger" data-pdf="downloads/a-puppy-for-selena-coloring-pages.pdf" data-title="Coloring Pages" aria-label="Preview the coloring pages PDF">
               <img src="images/printables/coloring-preview.jpg" alt="Preview of a coloring page from A Puppy for Selena: Selena feeding a goldfish, with the words 'Small acts of care show a big heart.'" />
-            </div>
+              <span class="preview-overlay" aria-hidden="true">
+                <span class="preview-overlay-icon">&#128270;</span>
+                <span class="preview-overlay-label">Click to preview</span>
+              </span>
+            </button>
             <h3>Coloring Pages</h3>
             <p>14 hand-illustrated coloring pages following Selena and her puppy through every little act of love and care.</p>
-            <a href="downloads/a-puppy-for-selena-coloring-pages.pdf" download class="btn btn-small">Download PDF</a>
+            <div class="card-actions">
+              <button type="button" class="btn btn-ghost btn-small card-preview-trigger" data-pdf="downloads/a-puppy-for-selena-coloring-pages.pdf" data-title="Coloring Pages">Preview</button>
+              <a href="downloads/a-puppy-for-selena-coloring-pages.pdf" download class="btn btn-small">Download PDF</a>
+            </div>
           </article>
           <article class="card">
-            <div class="card-image">
+            <button type="button" class="card-image card-preview-trigger" data-pdf="downloads/a-puppy-for-selena-bookmarks.pdf" data-title="Bookmarks" aria-label="Preview the bookmarks PDF">
               <img src="images/printables/bookmarks-preview.jpg" alt="Preview of a printable bookmark featuring Selena hugging her puppy, with the line 'A puppy isn't just a wish — it's a promise.'" />
-            </div>
+              <span class="preview-overlay" aria-hidden="true">
+                <span class="preview-overlay-icon">&#128270;</span>
+                <span class="preview-overlay-label">Click to preview</span>
+              </span>
+            </button>
             <h3>Bookmarks</h3>
             <p>7 printable bookmarks featuring Selena and her puppy, each with a gentle reminder about love, patience, and care.</p>
-            <a href="downloads/a-puppy-for-selena-bookmarks.pdf" download class="btn btn-small">Download PDF</a>
+            <div class="card-actions">
+              <button type="button" class="btn btn-ghost btn-small card-preview-trigger" data-pdf="downloads/a-puppy-for-selena-bookmarks.pdf" data-title="Bookmarks">Preview</button>
+              <a href="downloads/a-puppy-for-selena-bookmarks.pdf" download class="btn btn-small">Download PDF</a>
+            </div>
           </article>
         </div>
 
@@ -278,6 +285,24 @@
       <p class="footer-links"><a href="privacy.html">Privacy</a></p>
     </div>
   </footer>
+
+  <!-- PDF Preview Modal -->
+  <div class="pdf-modal" id="pdfModal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="pdfModalTitle">
+    <div class="pdf-modal-backdrop" data-close-modal></div>
+    <div class="pdf-modal-panel" role="document">
+      <div class="pdf-modal-header">
+        <h2 class="pdf-modal-title" id="pdfModalTitle">Preview</h2>
+        <div class="pdf-modal-actions">
+          <a href="#" class="btn btn-small pdf-modal-download" download>Download PDF</a>
+          <a href="#" class="btn btn-ghost btn-small pdf-modal-newtab" target="_blank" rel="noopener">Open in new tab</a>
+          <button type="button" class="pdf-modal-close" aria-label="Close preview" data-close-modal>&times;</button>
+        </div>
+      </div>
+      <div class="pdf-modal-frame-wrap">
+        <iframe class="pdf-modal-iframe" title="PDF preview"></iframe>
+      </div>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
