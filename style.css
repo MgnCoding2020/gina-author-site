@@ -1310,3 +1310,88 @@ img { max-width: 100%; height: auto; display: block; }
   .section { padding: 64px 0; }
   .container { padding: 0 20px; }
 }
+
+/* ---------- Author photo (real) ---------- */
+.about-photo-img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: cover;
+  object-position: center 35%;
+  border-radius: 50%;
+  box-shadow: var(--shadow-lift);
+  border: 6px solid var(--paper);
+}
+
+/* ---------- Coming-next book (with cover) ---------- */
+.series-next {
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 40px;
+  align-items: center;
+  margin-top: 56px;
+  padding: 32px;
+  background: linear-gradient(180deg, var(--paper) 0%, rgba(138, 168, 116, 0.07) 100%);
+  border: 1px dashed rgba(138, 168, 116, 0.5);
+  border-radius: var(--radius-lg);
+}
+.series-next-cover img {
+  display: block;
+  width: 100%;
+  border-radius: 6px;
+  box-shadow: var(--shadow-lift);
+}
+.series-next-body .series-card-desc { font-size: 16px; }
+
+/* ---------- Next book cover on book page ---------- */
+.next-book-cover img {
+  display: block;
+  width: 100%;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lift);
+}
+
+/* ---------- Book trailer / video ---------- */
+.book-trailer {
+  margin-top: 64px;
+  text-align: center;
+}
+.book-trailer .section-eyebrow { text-align: center; }
+.book-trailer-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(24px, 3vw, 30px);
+  color: var(--bark-deep);
+  margin: 4px 0 6px;
+  line-height: 1.2;
+}
+.book-trailer-sub {
+  color: var(--ink-soft);
+  font-size: 16px;
+  margin: 0 auto 24px;
+  max-width: 460px;
+}
+.video-frame {
+  max-width: 680px;
+  margin: 0 auto;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: var(--shadow-lift);
+  background: #1d1814;
+  line-height: 0;
+}
+.video-frame video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+@media (max-width: 880px) {
+  .series-next {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    text-align: center;
+  }
+  .series-next-cover { max-width: 240px; margin: 0 auto; }
+  .next-book-cover { max-width: 200px; margin: 0 auto; }
+}

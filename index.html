@@ -44,7 +44,8 @@
     },
     "sameAs": [
       "https://www.instagram.com/gina.littlesaporitopress",
-      "https://www.facebook.com/people/Little-Saporito-Press/61582445733881/"
+      "https://www.facebook.com/people/Little-Saporito-Press/61582445733881/",
+      "https://www.goodreads.com/littlesaporitopress"
     ]
   }
   </script>
@@ -77,7 +78,7 @@
     <section class="hero">
       <div class="container hero-inner">
         <div class="hero-art">
-          <img src="images/logo-full.png" alt="Little Saporito Press logo: a watercolor tree with open books in its leaves and a small puppy on a leash beneath it." />
+          <img src="images/logo.png" alt="Little Saporito Press logo: a watercolor tree with open books in its leaves and a small puppy on a leash beneath it." />
         </div>
         <div class="hero-copy">
           <p class="eyebrow">Stories inspired by family, love and imagination</p>
@@ -122,14 +123,30 @@
         </div>
 
         <!-- Coming next: Book 2 teaser -->
-        <div class="series-strip series-strip-single">
-          <article class="series-card series-card-upcoming">
+        <div class="series-next">
+          <div class="series-next-cover">
+            <img src="images/book-cover-selena-and-the-storm.png" alt="Cover of Selena and the Storm: Selena holding a red polka-dot umbrella in the rain beside her puppy Buttons and Sunny the hamster in a clear ball." />
+          </div>
+          <div class="series-next-body">
             <div class="series-card-tag series-card-tag-soon">Coming next</div>
             <h3 class="series-card-title">Selena and the Storm</h3>
-            <p class="series-card-desc">Book 2 in <em>The Selena Stories</em> &mdash; another gentle adventure with Selena, Buttons, and a new friend, Sunny the hamster.</p>
+            <p class="series-card-desc">Book 2 in <em>The Selena Stories</em> &mdash; another gentle adventure with Selena, Buttons, and a new friend, Sunny the hamster. <em>A little love can calm a big storm.</em></p>
             <p class="series-card-meta">In progress &middot; Release date to be announced</p>
             <a href="#contact" class="link-arrow">Be the first to know &rarr;</a>
-          </article>
+          </div>
+        </div>
+
+        <!-- Book trailer -->
+        <div class="book-trailer">
+          <p class="section-eyebrow">Watch</p>
+          <h3 class="book-trailer-title">See the story come to life</h3>
+          <p class="book-trailer-sub">A little peek inside <em>A Puppy for Selena</em>.</p>
+          <div class="video-frame">
+            <video controls preload="metadata" playsinline poster="images/book-cover-puppy-for-selena.png">
+              <source src="media/a-puppy-for-selena-trailer.mp4" type="video/mp4" />
+              Your browser doesn&rsquo;t support embedded video. <a href="media/a-puppy-for-selena-trailer.mp4">Download the clip</a> instead.
+            </video>
+          </div>
         </div>
       </div>
     </section>
@@ -183,7 +200,7 @@
           </article>
           <article class="card">
             <button type="button" class="card-image card-preview-trigger" data-pdf="downloads/a-puppy-for-selena-bookmarks.pdf" data-title="Bookmarks" aria-label="Preview the bookmarks PDF">
-              <img src="images/printables/bookmarks-preview.jpg" alt="Preview of a printable bookmark featuring Selena hugging her puppy, with the line 'A puppy isn't just a wish — it's a promise.'" />
+              <img src="images/printables/bookmarks-preview.jpg" alt="Preview of a printable bookmark featuring Selena hugging her puppy, with the line 'A puppy isn't just a wish &mdash; it's a promise.'" />
               <span class="preview-overlay" aria-hidden="true">
                 <span class="preview-overlay-icon">&#128270;</span>
                 <span class="preview-overlay-label">Click to preview</span>
@@ -196,6 +213,18 @@
               <a href="downloads/a-puppy-for-selena-bookmarks.pdf" download class="btn btn-small">Download PDF</a>
             </div>
           </article>
+        </div>
+
+        <!-- Soft support callout -->
+        <div class="support-callout">
+          <p class="support-text">
+            <strong>Enjoying these?</strong>
+            If they brought a smile to a little one in your life, consider leaving a tip to support Little Saporito Press. Every bit helps us keep making free things for kids.
+          </p>
+          <a href="https://ko-fi.com/littlesaporitopress" target="_blank" rel="noopener" class="btn btn-support">
+            <span aria-hidden="true">&#9829;</span> Support the press
+          </a>
+          <p class="support-note">Tips go directly to Gina. Free printables stay free, always.</p>
         </div>
       </div>
     </section>
@@ -211,7 +240,7 @@
           <p>When she is not writing, Gina enjoys creating book projects that bring families together.</p>
         </div>
         <div class="about-aside">
-          <div class="about-photo placeholder">Author photo<br/><span class="placeholder-sub">(coming soon)</span></div>
+          <img src="images/gina-saporito.jpg" alt="Gina Saporito, founder of Little Saporito Press, smiling and wearing green-rimmed glasses." class="about-photo-img" />
         </div>
       </div>
     </section>
@@ -232,8 +261,12 @@
     <section class="section section-accent">
       <div class="container newsletter">
         <h2>Be the first to know</h2>
-        <p>New books, behind-the-scenes peeks, and the occasional treat. No spam &mdash; promise.</p>
-        <p class="placeholder-note">[Newsletter signup form will go here once we set up Buttondown.]</p>
+        <p>New books, behind-the-scenes peeks, and the occasional treat &mdash; a newsletter is on the way.</p>
+        <p>For now, follow along on social or say hello by email. That&rsquo;s the best way to hear about new books and free printables.</p>
+        <div class="hero-actions" style="justify-content: center; margin-top: 20px;">
+          <a href="https://www.instagram.com/gina.littlesaporitopress" target="_blank" rel="noopener" class="btn btn-primary">Follow on Instagram</a>
+          <a href="mailto:gina.littlesaporitopress@gmail.com" class="btn btn-primary">Email us</a>
+        </div>
       </div>
     </section>
 
@@ -256,9 +289,15 @@
             </a>
           </li>
           <li>
-            <a href="#" target="_blank" rel="noopener">
-              <span class="social-name">TikTok</span>
-              <span class="social-handle">@handle (to add)</span>
+            <a href="https://www.goodreads.com/littlesaporitopress" target="_blank" rel="noopener">
+              <span class="social-name">Goodreads</span>
+              <span class="social-handle">Little Saporito Press</span>
+            </a>
+          </li>
+          <li>
+            <a href="mailto:gina.littlesaporitopress@gmail.com">
+              <span class="social-name">Email</span>
+              <span class="social-handle">gina.littlesaporitopress@gmail.com</span>
             </a>
           </li>
         </ul>
