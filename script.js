@@ -2,18 +2,6 @@
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
 
-// On the privacy page, fill in today's date as a sensible default for "Last updated".
-// You can hardcode a real date when the policy is finalized.
-const lastUpdatedEl = document.getElementById("lastUpdated");
-if (lastUpdatedEl) {
-  const now = new Date();
-  lastUpdatedEl.textContent = now.toLocaleDateString("en-US", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-}
-
 // ----------------------------------------------------------------
 // PDF preview modal
 // Click an image or "Preview" button with [data-pdf] to open the
@@ -31,6 +19,29 @@ if (lastUpdatedEl) {
 
   let lastFocused = null;
 
+  function getFocusable() {
+    return Array.from(
+      modal.querySelectorAll(
+        'a[href], button:not([disabled]), iframe, [tabindex]:not([tabindex="-1"])'
+      )
+    );
+  }
+
+  function trapFocus(e) {
+    if (e.key !== "Tab") return;
+    const focusable = getFocusable();
+    if (!focusable.length) return;
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) {
+      e.preventDefault();
+      last.focus();
+    } else if (!e.shiftKey && document.activeElement === last) {
+      e.preventDefault();
+      first.focus();
+    }
+  }
+
   function openModal(pdf, name) {
     if (!pdf) return;
     lastFocused = document.activeElement;
@@ -41,6 +52,7 @@ if (lastUpdatedEl) {
     modal.classList.add("is-open");
     modal.setAttribute("aria-hidden", "false");
     document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", trapFocus);
     // Move focus into the modal for keyboard users
     const closeBtn = modal.querySelector(".pdf-modal-close");
     if (closeBtn) closeBtn.focus();
@@ -51,6 +63,7 @@ if (lastUpdatedEl) {
     modal.setAttribute("aria-hidden", "true");
     iframe.src = "";
     document.body.style.overflow = "";
+    document.removeEventListener("keydown", trapFocus);
     if (lastFocused && typeof lastFocused.focus === "function") {
       lastFocused.focus();
     }

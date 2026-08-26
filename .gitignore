@@ -1,0 +1,7 @@
+# Local Claude Code settings (contains machine-specific dev config, e.g. localhost URLs)
+.claude/
+
+# OS/editor cruft
+.DS_Store
+Thumbs.db
+*.swp
