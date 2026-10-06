@@ -5,3 +5,6 @@
 .DS_Store
 Thumbs.db
 *.swp
+
+# Local Cloudflare Pages dev server state/cache
+.wrangler/
