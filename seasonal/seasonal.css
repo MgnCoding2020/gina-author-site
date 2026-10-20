@@ -4,6 +4,17 @@
   --seasonal-purple: #6c4e9e;
 }
 
+/* The squirrel is position:absolute (so it scrolls with real page content
+   instead of drifting out of sync -- see .seasonal-squirrel below) and its
+   off-screen entry/exit points sit past window.innerWidth. An absolutely
+   positioned element out there DOES expand the document's scrollable area
+   (a fixed one wouldn't), so without this the page gets a permanent
+   horizontal scrollbar whenever the squirrel is waiting off-screen. */
+html,
+body {
+  overflow-x: hidden;
+}
+
 /* ---- Banner ---- */
 
 .seasonal-banner {
@@ -282,4 +293,280 @@ html.seasonal-decor-off .seasonal-bouncer {
     bottom: 0.6rem;
     font-size: 0.75rem;
   }
+}
+
+/* ---- Fall: falling leaves ---- */
+
+@keyframes seasonal-leaf-fall {
+  0% {
+    transform: translate(0, -10vh) rotate(0deg);
+  }
+  25% {
+    transform: translate(var(--leaf-sway, 50px), 25vh) rotate(90deg);
+  }
+  50% {
+    transform: translate(calc(var(--leaf-sway, 50px) * -1), 50vh) rotate(180deg);
+  }
+  75% {
+    transform: translate(var(--leaf-sway, 50px), 75vh) rotate(270deg);
+  }
+  100% {
+    transform: translate(0, 110vh) rotate(360deg);
+  }
+}
+
+.seasonal-leaf {
+  position: fixed;
+  top: 0;
+  height: auto;
+  z-index: 54;
+  pointer-events: none;
+  animation-name: seasonal-leaf-fall;
+  animation-duration: var(--leaf-duration, 12s);
+  animation-delay: var(--leaf-delay, 0s);
+  animation-timing-function: linear;
+  animation-iteration-count: 1;
+  animation-fill-mode: forwards;
+  filter: drop-shadow(0 2px 4px rgba(58, 46, 38, 0.3));
+}
+
+html.seasonal-decor-off .seasonal-leaf {
+  display: none;
+}
+
+/* ---- Fall: pumpkin cluster ---- */
+
+@keyframes seasonal-pumpkin-sway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+  50% {
+    transform: rotate(2deg);
+  }
+}
+
+.seasonal-pumpkin-cluster {
+  position: fixed;
+  left: 0.75rem;
+  bottom: 0.75rem;
+  width: 150px;
+  height: auto;
+  z-index: 40;
+  pointer-events: none;
+  transform-origin: bottom center;
+  animation: seasonal-pumpkin-sway 7s ease-in-out infinite;
+  filter: drop-shadow(0 3px 6px rgba(58, 46, 38, 0.35));
+}
+
+html.seasonal-decor-off .seasonal-pumpkin-cluster {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .seasonal-pumpkin-cluster {
+    width: 104px;
+  }
+}
+
+/* ---- Fall: vine & acorn trim (replaces the lights border) ---- */
+
+.seasonal-trim {
+  position: fixed;
+  inset: 0;
+  z-index: 55;
+  pointer-events: none;
+}
+
+.seasonal-trim-edge {
+  position: fixed;
+}
+
+.seasonal-trim-top,
+.seasonal-trim-bottom {
+  left: 0;
+  right: 0;
+  height: 40px;
+  background-repeat: repeat-x;
+  background-size: auto 100%;
+}
+
+.seasonal-trim-top {
+  top: 0;
+}
+
+.seasonal-trim-bottom {
+  bottom: 0;
+  transform: scaleY(-1);
+}
+
+.seasonal-trim-left,
+.seasonal-trim-right {
+  top: 0;
+  bottom: 0;
+  width: 40px;
+  background-repeat: repeat-y;
+  background-size: 100% auto;
+}
+
+.seasonal-trim-left {
+  left: 0;
+}
+
+.seasonal-trim-right {
+  right: 0;
+  transform: scaleX(-1);
+}
+
+html.seasonal-decor-off .seasonal-trim {
+  display: none;
+}
+
+/* ---- Fall: leaf pile (collects, then "explodes" on a timer or click) ---- */
+
+.seasonal-leaf-pile {
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  width: 320px;
+  height: 110px;
+  margin-left: -160px;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.seasonal-pile-piece {
+  position: absolute;
+  bottom: 0;
+  height: auto;
+  opacity: 0.92;
+  pointer-events: auto;
+  cursor: pointer;
+  filter: drop-shadow(0 1px 2px rgba(58, 46, 38, 0.25));
+}
+
+html.seasonal-decor-off .seasonal-leaf-pile {
+  display: none;
+}
+
+/* ---- Fall: scarecrow (paces left and back, opposite the pumpkin cluster) ---- */
+
+@keyframes seasonal-scarecrow-jig {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  25% {
+    transform: translateY(-14px) rotate(3deg);
+  }
+  50% {
+    transform: translateY(0) rotate(-2deg);
+  }
+  75% {
+    transform: translateY(-10px) rotate(4deg);
+  }
+}
+
+@keyframes seasonal-scarecrow-jig-mirrored {
+  0%,
+  100% {
+    transform: scaleX(-1) translateY(0) rotate(-4deg);
+  }
+  25% {
+    transform: scaleX(-1) translateY(-14px) rotate(3deg);
+  }
+  50% {
+    transform: scaleX(-1) translateY(0) rotate(-2deg);
+  }
+  75% {
+    transform: scaleX(-1) translateY(-10px) rotate(4deg);
+  }
+}
+
+.seasonal-scarecrow-walker {
+  position: fixed;
+  right: 0.75rem;
+  top: 6.5rem;
+  width: 130px;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.seasonal-scarecrow-anchor {
+  display: block;
+  width: 100%;
+  height: auto;
+  transform-origin: bottom center;
+  animation: seasonal-scarecrow-jig 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 3px 6px rgba(58, 46, 38, 0.3));
+}
+
+html.seasonal-decor-off .seasonal-scarecrow-walker {
+  display: none;
+}
+
+@media (max-width: 600px) {
+  .seasonal-scarecrow-walker {
+    width: 88px;
+    top: 5.5rem;
+  }
+}
+
+/* ---- Fall: squirrel (occasional scurry + perch) ---- */
+
+.seasonal-squirrel {
+  /* Document-relative, not viewport-fixed: it needs to land on and scroll
+     together with real cards (which are normal page content), so its
+     coordinates are computed including scroll offset to match. */
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 70px;
+  height: auto;
+  z-index: 54;
+  pointer-events: none;
+  opacity: 0;
+  filter: drop-shadow(0 2px 4px rgba(58, 46, 38, 0.35));
+}
+
+html.seasonal-decor-off .seasonal-squirrel {
+  display: none;
+}
+
+/* ---- Fall palette override ---- */
+
+:root {
+  --fall-rust: #b5572c;
+  --fall-gold: #c99a2e;
+  --fall-green-deep: #3f5d3a;
+}
+
+html.season-fall .seasonal-banner {
+  background: linear-gradient(135deg, rgba(181, 87, 44, 0.08), rgba(63, 93, 58, 0.08));
+}
+
+html.season-fall .seasonal-eyebrow {
+  color: var(--fall-rust);
+}
+
+html.season-fall .seasonal-card {
+  border-color: var(--fall-gold);
+}
+
+/* ---- Fall: subtle card accent (prototype on review cards) ---- */
+
+html.seasonal-card-accent:not(.seasonal-decor-off) .review-card {
+  position: relative;
+}
+
+html.seasonal-card-accent:not(.seasonal-decor-off) .review-card::after {
+  content: "";
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 20px;
+  height: 20px;
+  background: url("fall/decor/acorn.svg") no-repeat center / contain;
+  opacity: 0.55;
+  pointer-events: none;
 }

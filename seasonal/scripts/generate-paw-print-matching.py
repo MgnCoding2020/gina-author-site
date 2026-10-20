@@ -1,20 +1,25 @@
 """
-Generates the Halloween "matching pairs" printable (PDF + webp preview)
-used on the seasonal activities page.
+Generates the "matching pairs" printable (PDF + webp preview) used on the
+seasonal activities page. Now spans both Halloween and fall: 3 Halloween
+sheets (Set A/B/C, unchanged from the original) plus 3 new fall sheets
+(Set D/E/F), combined into one 6-sheet PDF since the activity runs through
+both seasonal windows (see ROADMAP.md).
 
-Six distinct icon shapes (dog paw, cat paw, bird track, pumpkin, witch hat,
-candy corn) are drawn as flat single-color silhouettes so the worksheet
-prints fine on a plain home printer. Each of the 3 pages ("Set A/B/C")
-picks 5 of the 6 shapes at random with no repeats, so every pair on a
-given page is visually distinct — kids match by shape, not by elimination.
+Twelve distinct icon shapes total -- 6 Halloween (dog paw, cat paw, bird
+track, pumpkin, witch hat, candy corn) and 6 fall (leaf, pumpkin, scarecrow,
+acorn, apple, mushroom; pumpkin is shared between both pools) -- drawn as
+flat single-color silhouettes so the worksheet prints fine on a plain home
+printer. Each page picks 5 of its pool's 6 shapes at random with no
+repeats, so every pair on a given page is visually distinct — kids match
+by shape, not by elimination.
 
 Usage:
     python generate-paw-print-matching.py
 
 Requires: Pillow, fpdf2 (both already installed in this environment).
 Outputs (overwrites):
-    ../halloween/activities/paw-print-matching.pdf
-    ../halloween/activities/paw-print-matching-preview.webp
+    ../activities/paw-print-matching.pdf
+    ../activities/paw-print-matching-preview.webp
 """
 
 import random
@@ -23,7 +28,7 @@ from pathlib import Path
 from PIL import Image, ImageDraw
 from fpdf import FPDF
 
-OUT_DIR = Path(__file__).resolve().parent.parent / "halloween" / "activities"
+OUT_DIR = Path(__file__).resolve().parent.parent / "activities"
 PDF_PATH = OUT_DIR / "paw-print-matching.pdf"
 PREVIEW_PATH = OUT_DIR / "paw-print-matching-preview.webp"
 
@@ -167,6 +172,101 @@ def draw_candy_corn():
     return _down(img)
 
 
+def _poly_points(cubic_segments):
+    pts = []
+    for p0, p1, p2, p3 in cubic_segments:
+        n = 14
+        for i in range(n + 1):
+            t = i / n
+            mt = 1 - t
+            x = mt**3 * p0[0] + 3 * mt**2 * t * p1[0] + 3 * mt * t**2 * p2[0] + t**3 * p3[0]
+            y = mt**3 * p0[1] + 3 * mt**2 * t * p1[1] + 3 * mt * t**2 * p2[1] + t**3 * p3[1]
+            pts.append((x, y))
+    return pts
+
+
+def draw_leaf():
+    img = _canvas()
+    d = ImageDraw.Draw(img)
+    c = ICON_PX / 2
+    s = ICON_PX / 240
+    # Same pointed-leaf silhouette as the fall decor SVGs, in local -80..80 space.
+    top, bot = (0, -78), (0, 78)
+    right = [(top, (34, -58), (30, 42), bot)]
+    left = [(bot, (-30, 42), (-34, -58), top)]
+    pts = [(c + x * s, c + y * s) for x, y in _poly_points(right + left)]
+    d.polygon(pts, fill=INK)
+    d.line([(c, c - 60 * s), (c, c + 55 * s)], fill=(0, 0, 0, 0), width=max(1, int(3 * s)))
+    return _down(img)
+
+
+def draw_acorn():
+    img = _canvas()
+    d = ImageDraw.Draw(img)
+    c = ICON_PX / 2
+    s = ICON_PX / 240
+    cap = [((-58, -14), (-54, -62), (54, -62), (58, -14))]
+    nut = [((58, -14), (46, 68), (-46, 68), (-58, -14))]
+    pts = [(c + x * s, c + y * s) for x, y in _poly_points(cap + nut)]
+    d.polygon(pts, fill=INK)
+    d.line([(c - 50 * s, c - 12 * s), (c + 50 * s, c - 12 * s)], fill=(0, 0, 0, 0), width=max(1, int(5 * s)))
+    return _down(img)
+
+
+def draw_scarecrow():
+    img = _canvas()
+    d = ImageDraw.Draw(img)
+    c = ICON_PX / 2
+    s = ICON_PX / 240
+    # Crossbar pole behind
+    d.rectangle([c - 7 * s, c - 20 * s, c + 7 * s, c + 85 * s], fill=INK)
+    d.rectangle([c - 55 * s, c + 10 * s, c + 55 * s, c + 24 * s], fill=INK)
+    # Head + hat
+    d.ellipse([c - 32 * s, c - 85 * s, c + 32 * s, c - 21 * s], fill=INK)
+    d.polygon(
+        [(c - 30 * s, c - 60 * s), (c, c - 118 * s), (c + 30 * s, c - 60 * s)],
+        fill=INK,
+    )
+    d.ellipse([c - 42 * s, c - 66 * s, c + 42 * s, c - 50 * s], fill=INK)
+    # Face cutouts (eyes + stitched smile)
+    d.ellipse([c - 16 * s, c - 56 * s, c - 8 * s, c - 46 * s], fill=(0, 0, 0, 0))
+    d.ellipse([c + 8 * s, c - 56 * s, c + 16 * s, c - 46 * s], fill=(0, 0, 0, 0))
+    d.line([(c - 12 * s, c - 34 * s), (c + 12 * s, c - 34 * s)], fill=(0, 0, 0, 0), width=max(1, int(3 * s)))
+    return _down(img)
+
+
+def draw_apple():
+    img = _canvas()
+    d = ImageDraw.Draw(img)
+    c = ICON_PX / 2
+    s = ICON_PX / 240
+    d.ellipse([c - 56 * s, c - 40 * s, c + 56 * s, c + 72 * s], fill=INK)
+    # top indent (two small transparent notches either side of the stem)
+    d.ellipse([c - 30 * s, c - 54 * s, c - 6 * s, c - 28 * s], fill=(0, 0, 0, 0))
+    d.ellipse([c + 6 * s, c - 54 * s, c + 30 * s, c - 28 * s], fill=(0, 0, 0, 0))
+    d.line([(c, c - 44 * s), (c + 4 * s, c - 70 * s)], fill=INK, width=max(1, int(7 * s)))
+    d.polygon(
+        [(c + 6 * s, c - 64 * s), (c + 30 * s, c - 72 * s), (c + 14 * s, c - 50 * s)],
+        fill=INK,
+    )
+    return _down(img)
+
+
+def draw_mushroom():
+    img = _canvas()
+    d = ImageDraw.Draw(img)
+    c = ICON_PX / 2
+    s = ICON_PX / 240
+    d.pieslice([c - 68 * s, c - 70 * s, c + 68 * s, c + 36 * s], 180, 360, fill=INK)
+    d.rectangle([c - 20 * s, c - 18 * s, c + 20 * s, c + 70 * s], fill=INK)
+    for dx, dy, r in [(-28, -32, 9), (18, -40, 7), (0, -12, 8), (36, -18, 6)]:
+        d.ellipse(
+            [c + dx * s - r * s, c + dy * s - r * s, c + dx * s + r * s, c + dy * s + r * s],
+            fill=(0, 0, 0, 0),
+        )
+    return _down(img)
+
+
 ICON_BUILDERS = {
     "dog_paw": draw_dog_paw,
     "cat_paw": draw_cat_paw,
@@ -174,7 +274,14 @@ ICON_BUILDERS = {
     "pumpkin": draw_pumpkin,
     "witch_hat": draw_witch_hat,
     "candy_corn": draw_candy_corn,
+    "leaf": draw_leaf,
+    "acorn": draw_acorn,
+    "scarecrow": draw_scarecrow,
+    "apple": draw_apple,
+    "mushroom": draw_mushroom,
 }
+
+FALL_SHAPES = ["leaf", "pumpkin", "scarecrow", "acorn", "apple", "mushroom"]
 
 
 def build_icon_cache(tmp_dir):
@@ -194,7 +301,7 @@ def derangement(items):
             return order
 
 
-def draw_page(pdf, icon_cache, set_letter):
+def draw_page(pdf, icon_cache, set_letter, shapes_pool, title):
     pdf.add_page()
     pdf.set_font("Helvetica", "", 11)
     pdf.set_text_color(90, 80, 72)
@@ -204,7 +311,7 @@ def draw_page(pdf, icon_cache, set_letter):
     pdf.set_font("Helvetica", "B", 26)
     pdf.set_text_color(58, 46, 38)
     pdf.set_xy(0, 60)
-    pdf.cell(PAGE_W, 32, "Match the Halloween Pairs!", align="C")
+    pdf.cell(PAGE_W, 32, title, align="C")
 
     pdf.set_font("Helvetica", "", 13)
     pdf.set_text_color(90, 80, 72)
@@ -215,7 +322,7 @@ def draw_page(pdf, icon_cache, set_letter):
         align="C",
     )
 
-    shapes = random.sample(SHAPES, ROWS)
+    shapes = random.sample(shapes_pool, ROWS)
     right_order = derangement(shapes)
 
     spacing = (ROW_BOTTOM - ROW_TOP) / ROWS
@@ -260,7 +367,9 @@ def main():
     pdf = FPDF(unit="pt", format=(PAGE_W, PAGE_H))
     pdf.set_auto_page_break(False)
     for set_letter in ("A", "B", "C"):
-        draw_page(pdf, icon_cache, set_letter)
+        draw_page(pdf, icon_cache, set_letter, SHAPES, "Match the Halloween Pairs!")
+    for set_letter in ("D", "E", "F"):
+        draw_page(pdf, icon_cache, set_letter, FALL_SHAPES, "Match the Fall Pairs!")
     pdf.output(str(PDF_PATH))
 
     # Preview webp: render page 1 at a readable thumbnail size via Pillow,

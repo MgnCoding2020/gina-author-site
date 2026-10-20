@@ -8,3 +8,8 @@ Thumbs.db
 
 # Local Cloudflare Pages dev server state/cache
 .wrangler/
+
+# Raw reference art (source images processed into final seasonal decor assets,
+# not themselves used by the site)
+seasonal/fall/decor/scarecrow-ref/
+seasonal/fall/decor/squirrel-ref/

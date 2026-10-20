@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 140">
+  <path d="M 24.00,0.00 L 25.04,2.92 L 26.07,5.83 L 27.06,8.75 L 28.00,11.67 L 28.87,14.58 L 29.66,17.50 L 30.35,20.42 L 30.93,23.33 L 31.39,26.25 L 31.73,29.17 L 31.93,32.08 L 32.00,35.00 L 31.93,37.92 L 31.73,40.83 L 31.39,43.75 L 30.93,46.67 L 30.35,49.58 L 29.66,52.50 L 28.87,55.42 L 28.00,58.33 L 27.06,61.25 L 26.07,64.17 L 25.04,67.08 L 24.00,70.00 L 22.96,72.92 L 21.93,75.83 L 20.94,78.75 L 20.00,81.67 L 19.13,84.58 L 18.34,87.50 L 17.65,90.42 L 17.07,93.33 L 16.61,96.25 L 16.27,99.17 L 16.07,102.08 L 16.00,105.00 L 16.07,107.92 L 16.27,110.83 L 16.61,113.75 L 17.07,116.67 L 17.65,119.58 L 18.34,122.50 L 19.13,125.42 L 20.00,128.33 L 20.94,131.25 L 21.93,134.17 L 22.96,137.08 L 24.00,140.00" fill="none" stroke="#3f5d3a" stroke-width="2.6" stroke-linecap="round"/>
+  <g transform="translate(32.0,35.0) rotate(105)">
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#4a3420" stroke-width="1.4" stroke-linecap="round"/>
+    <g transform="translate(0,8) scale(0.85)">
+      <path d="M 0,-14 C 12,-8 12,10 0,20 C -12,10 -12,-8 0,-14 Z" fill="#b5362a" stroke="rgba(0,0,0,0.22)" stroke-width="1"/>
+      <line x1="0" y1="-8" x2="0" y2="15" stroke="rgba(0,0,0,0.3)" stroke-width="1"/>
+    </g>
+  </g>
+  <g transform="translate(16.0,105.0) rotate(-75)">
+    <line x1="0" y1="0" x2="0" y2="8" stroke="#4a3420" stroke-width="1.4" stroke-linecap="round"/>
+    <g transform="translate(0,8) scale(0.78)">
+      <path d="M 0,-14 C 12,-8 12,10 0,20 C -12,10 -12,-8 0,-14 Z" fill="#d97a2b" stroke="rgba(0,0,0,0.22)" stroke-width="1"/>
+      <line x1="0" y1="-8" x2="0" y2="15" stroke="rgba(0,0,0,0.3)" stroke-width="1"/>
+    </g>
+  </g>
+  <g transform="translate(24.0,70.0) rotate(98)">
+    <line x1="0" y1="0" x2="0" y2="7" stroke="#4a3420" stroke-width="1.4" stroke-linecap="round"/>
+    <g transform="translate(0,7) scale(0.9)">
+      <path d="M -8,-2 C -8,-8 8,-8 8,-2 L 8,0.5 C 3,2.5 -3,2.5 -8,0.5 Z" fill="#6b4a2f" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+      <path d="M -8,0.5 C -9,8 -4,14 0,15.5 C 4,14 9,8 8,0.5 Z" fill="#c99a5b" stroke="rgba(0,0,0,0.2)" stroke-width="0.8"/>
+      <line x1="-4" y1="4" x2="4" y2="4" stroke="rgba(74,52,32,0.4)" stroke-width="0.8"/>
+    </g>
+  </g>
+</svg>

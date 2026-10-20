@@ -29,6 +29,7 @@
   if (!activeKey) return;
   var season = CONFIG[activeKey];
   if (!season) return;
+  document.documentElement.classList.add("season-" + activeKey);
 
   if (mount) {
 
@@ -182,7 +183,7 @@
       var name = decor.flyers[fi % decor.flyers.length];
       var img = document.createElement("img");
       img.className = "seasonal-flyer";
-      img.src = "seasonal/halloween/decor/" + name + ".svg";
+      img.src = "seasonal/" + activeKey + "/decor/" + name + ".svg";
       img.alt = "";
       img.setAttribute("aria-hidden", "true");
       document.body.appendChild(img);
@@ -252,7 +253,7 @@
     var BOUNCER_SIZE = 72;
     var bouncer = document.createElement("img");
     bouncer.className = "seasonal-bouncer";
-    bouncer.src = "seasonal/halloween/decor/" + decor.bouncer + ".svg";
+    bouncer.src = "seasonal/" + activeKey + "/decor/" + decor.bouncer + ".svg";
     bouncer.alt = "";
     bouncer.setAttribute("aria-hidden", "true");
     document.body.appendChild(bouncer);
@@ -261,6 +262,8 @@
     var by = Math.random() * Math.max(window.innerHeight - BOUNCER_SIZE, 0);
     var bvx = (Math.random() < 0.5 ? -1 : 1) * (0.08 + Math.random() * 0.06);
     var bvy = (Math.random() < 0.5 ? -1 : 1) * (0.08 + Math.random() * 0.06);
+    var brot = 0;
+    var BOUNCER_SPIN_SPEED = decor.bouncerTwirl ? 0.03 : 0; // deg/ms, ~1 turn per ~3.3s
     var lastTick = null;
 
     function bounceTick(timestamp) {
@@ -302,8 +305,316 @@
         bvy = -Math.abs(bvy);
       }
 
-      bouncer.style.transform = "translate(" + bx + "px, " + by + "px)";
+      var transform = "translate(" + bx + "px, " + by + "px)";
+      if (BOUNCER_SPIN_SPEED) {
+        brot = (brot + BOUNCER_SPIN_SPEED * dt) % 360;
+        transform += " rotate(" + brot + "deg)";
+      }
+      bouncer.style.transform = transform;
     }
     requestAnimationFrame(bounceTick);
+  }
+
+  // Set by the leaf-pile block below (if active) so a landing falling-leaf
+  // can feed a new piece into the pile. Declared here so it exists
+  // regardless of block order -- assignment always completes before any
+  // animationend event can fire, since events only fire after this
+  // synchronous script body finishes running.
+  var onLeafLand = null;
+
+  if (decor.leaves && decor.leaves.length) {
+    var LEAF_POOL_SIZE = 10;
+
+    function randomizeLeaf(el) {
+      var name = decor.leaves[Math.floor(Math.random() * decor.leaves.length)];
+      var size = 26 + Math.random() * 18;
+      var duration = 9 + Math.random() * 7;
+      var delay = Math.random() * 8;
+      var sway = 40 + Math.random() * 60;
+      el.src = "seasonal/" + activeKey + "/decor/" + name + ".svg";
+      el.style.width = size + "px";
+      el.style.left = Math.random() * 100 + "vw";
+      el.style.setProperty("--leaf-duration", duration + "s");
+      el.style.setProperty("--leaf-delay", delay + "s");
+      el.style.setProperty("--leaf-sway", sway + "px");
+      el.style.animation = "none";
+      void el.offsetWidth;
+      el.style.animation = "";
+    }
+
+    for (var li = 0; li < LEAF_POOL_SIZE; li++) {
+      var leafEl = document.createElement("img");
+      leafEl.className = "seasonal-leaf";
+      leafEl.alt = "";
+      leafEl.setAttribute("aria-hidden", "true");
+      randomizeLeaf(leafEl);
+      leafEl.addEventListener("animationend", function (e) {
+        if (onLeafLand) onLeafLand();
+        randomizeLeaf(e.target);
+      });
+      document.body.appendChild(leafEl);
+    }
+  }
+
+  if (decor.pumpkinCluster) {
+    var pumpkinCluster = document.createElement("img");
+    pumpkinCluster.className = "seasonal-pumpkin-cluster";
+    pumpkinCluster.src = "seasonal/" + activeKey + "/decor/pumpkin-cluster.svg";
+    pumpkinCluster.alt = "";
+    pumpkinCluster.setAttribute("aria-hidden", "true");
+    document.body.appendChild(pumpkinCluster);
+  }
+
+  if (decor.scarecrowAnchor) {
+    // Two-layer structure: the outer wrapper holds position + the walking
+    // translateX (a JS-driven transition), the inner image holds the
+    // continuous jig bounce (a CSS keyframe animation). They have to live
+    // on separate elements -- both would otherwise be fighting to set the
+    // same element's `transform`.
+    var SCARECROW_WALK_DISTANCE = 220;
+
+    var scarecrowWrap = document.createElement("div");
+    scarecrowWrap.className = "seasonal-scarecrow-walker";
+    scarecrowWrap.setAttribute("aria-hidden", "true");
+    var scarecrowEl = document.createElement("img");
+    scarecrowEl.className = "seasonal-scarecrow-anchor";
+    scarecrowEl.alt = "";
+    scarecrowWrap.appendChild(scarecrowEl);
+    document.body.appendChild(scarecrowWrap);
+
+    function setScarecrowFrame(name) {
+      scarecrowEl.src = "seasonal/" + activeKey + "/decor/" + name + ".webp";
+    }
+    function setScarecrowFacing(mirrored) {
+      scarecrowEl.style.animationName = mirrored ? "seasonal-scarecrow-jig-mirrored" : "seasonal-scarecrow-jig";
+    }
+    setScarecrowFrame("scarecrow-front");
+    setScarecrowFacing(false);
+
+    // Idle (facing home) -> turn (brief side-view) -> walk out -> idle ->
+    // turn -> walk back -> repeat. The art has no walk-cycle leg frames, so
+    // "walking" is the whole figure sliding while the jig bounce keeps it
+    // feeling alive, with the side view standing in for the turn itself.
+    var scarecrowAtHome = true;
+
+    function scarecrowCycle() {
+      // turn
+      setScarecrowFrame("scarecrow-side");
+      setTimeout(function () {
+        scarecrowAtHome = !scarecrowAtHome;
+        setScarecrowFrame("scarecrow-front");
+        setScarecrowFacing(!scarecrowAtHome);
+        scarecrowWrap.style.transition = "transform 3.5s ease-in-out";
+        scarecrowWrap.style.transform = scarecrowAtHome
+          ? "translateX(0)"
+          : "translateX(-" + SCARECROW_WALK_DISTANCE + "px)";
+        var settleDelay = 3500 + (scarecrowAtHome ? 12000 + Math.random() * 8000 : 4000 + Math.random() * 3000);
+        setTimeout(scarecrowCycle, settleDelay);
+      }, 550);
+    }
+    setTimeout(scarecrowCycle, 12000 + Math.random() * 8000);
+  }
+
+  if (decor.trim) {
+    var trim = document.createElement("div");
+    trim.className = "seasonal-trim";
+    trim.setAttribute("aria-hidden", "true");
+    var trimTileH = "url(seasonal/" + activeKey + "/decor/vine-tile-h.svg)";
+    var trimTileV = "url(seasonal/" + activeKey + "/decor/vine-tile-v.svg)";
+    [
+      { side: "top", tile: trimTileH },
+      { side: "bottom", tile: trimTileH },
+      { side: "left", tile: trimTileV },
+      { side: "right", tile: trimTileV }
+    ].forEach(function (edge) {
+      var strip = document.createElement("div");
+      strip.className = "seasonal-trim-edge seasonal-trim-" + edge.side;
+      strip.style.backgroundImage = edge.tile;
+      trim.appendChild(strip);
+    });
+    document.body.insertBefore(trim, document.body.firstChild);
+  }
+
+  if (decor.leafPile && decor.leaves && decor.leaves.length) {
+    var PILE_BOX_WIDTH = 320;
+    var PILE_MAX_PIECES = 40;
+    var PILE_EXPLODE_MS = 600;
+    var pilePool = decor.leaves.concat(["acorn"]);
+
+    var pileBox = document.createElement("div");
+    pileBox.className = "seasonal-leaf-pile";
+    pileBox.setAttribute("aria-hidden", "true");
+    document.body.appendChild(pileBox);
+
+    // No timer, no auto-explode: the pile just keeps growing as leaves land
+    // (up to a practical cap) until a visitor clicks it. "settling" is a
+    // brief technical cooldown covering the burst transition only, so a
+    // leaf landing mid-explosion doesn't spawn a piece into a pile that's
+    // still mid-animation.
+    var pileState = "collecting"; // "collecting" | "settling"
+    var pilePieces = [];
+
+    function addPilePiece() {
+      if (pileState !== "collecting" || pilePieces.length >= PILE_MAX_PIECES) return;
+      var name = pilePool[Math.floor(Math.random() * pilePool.length)];
+      var piece = document.createElement("img");
+      piece.className = "seasonal-pile-piece";
+      piece.src = "seasonal/" + activeKey + "/decor/" + name + ".svg";
+      piece.alt = "";
+      var size = 30 + Math.random() * 18;
+      var spread = Math.min(26 + pilePieces.length * 2.4, 140);
+      var offsetX = (Math.random() * 2 - 1) * spread;
+      piece.style.width = size + "px";
+      piece.style.left = PILE_BOX_WIDTH / 2 + offsetX + "px";
+      piece.style.bottom = Math.random() * 10 + "px";
+      piece.style.setProperty("--pile-rotate", Math.random() * 50 - 25 + "deg");
+      piece.style.transform = "rotate(var(--pile-rotate))";
+      pileBox.appendChild(piece);
+      pilePieces.push(piece);
+    }
+
+    function explodePile() {
+      if (pileState !== "collecting" || !pilePieces.length) return;
+      pileState = "settling";
+      pilePieces.forEach(function (piece) {
+        var angle = Math.random() * Math.PI * 2;
+        var dist = 70 + Math.random() * 100;
+        var dx = Math.cos(angle) * dist;
+        var dy = Math.sin(angle) * dist * -1 - 30;
+        piece.style.transition =
+          "transform " + PILE_EXPLODE_MS / 1000 + "s ease-out, opacity " + PILE_EXPLODE_MS / 1000 + "s ease-out";
+        piece.style.transform =
+          "rotate(var(--pile-rotate)) translate(" + dx + "px, " + dy + "px) rotate(" + (Math.random() * 180 - 90) + "deg)";
+        piece.style.opacity = "0";
+      });
+      setTimeout(function () {
+        pileBox.innerHTML = "";
+        pilePieces = [];
+        pileState = "collecting";
+      }, PILE_EXPLODE_MS + 50);
+    }
+
+    pileBox.addEventListener("click", explodePile);
+    onLeafLand = addPilePiece;
+  }
+
+  if (decor.cardAccent) {
+    document.documentElement.classList.add("seasonal-card-accent");
+  }
+
+  if (decor.squirrel) {
+    var SQUIRREL_SIZE = 70;
+    var squirrelEl = document.createElement("img");
+    squirrelEl.className = "seasonal-squirrel";
+    squirrelEl.alt = "";
+    squirrelEl.setAttribute("aria-hidden", "true");
+    document.body.appendChild(squirrelEl);
+
+    function setSquirrelPose(name) {
+      squirrelEl.src = "seasonal/" + activeKey + "/decor/squirrel-" + name + ".webp";
+    }
+
+    // Picks an edge (left or right) of a currently-on-screen card to perch
+    // on and peek from, using the matching peek-left/peek-right art; falls
+    // back to a spot near the bottom if no card is visible. Coordinates are
+    // document-absolute (rect + current scroll), matching the element being
+    // position:absolute rather than fixed -- see the note on squirrelEl
+    // below for why.
+    function pickPerchPoint() {
+      var cards = Array.prototype.slice.call(
+        document.querySelectorAll(".card, .seasonal-card, .review-card")
+      );
+      var visible = cards.filter(function (el) {
+        var r = el.getBoundingClientRect();
+        return r.width > 0 && r.top < window.innerHeight && r.bottom > 0 && r.left < window.innerWidth && r.right > 0;
+      });
+      if (!visible.length) {
+        return {
+          x: window.scrollX + Math.random() * Math.max(window.innerWidth - SQUIRREL_SIZE, 0),
+          y: window.scrollY + window.innerHeight - 60 - Math.random() * 180,
+          peekPose: Math.random() < 0.5 ? "peek-left" : "peek-right",
+        };
+      }
+      var card = visible[Math.floor(Math.random() * visible.length)];
+      var r = card.getBoundingClientRect();
+      var pageTop = window.scrollY + Math.max(r.top - SQUIRREL_SIZE * 0.4, 0);
+      if (Math.random() < 0.5) {
+        // peek-left's grip hangs off the art's own right edge -- line that
+        // edge up with the card's right edge (a few px of overlap so it
+        // reads as gripping on, not floating past it).
+        return { x: window.scrollX + r.right - SQUIRREL_SIZE + 6, y: pageTop, peekPose: "peek-left" };
+      }
+      // peek-right's grip hangs off the art's own left edge -- line that up
+      // with the card's left edge instead.
+      return { x: window.scrollX + r.left - 6, y: pageTop, peekPose: "peek-right" };
+    }
+
+    function randomSideEntry() {
+      var fromLeft = Math.random() < 0.5;
+      var y = window.scrollY + window.innerHeight - 50 - Math.random() * 180;
+      return { x: fromLeft ? window.scrollX - SQUIRREL_SIZE : window.scrollX + window.innerWidth + SQUIRREL_SIZE, y: y };
+    }
+
+    var squirrelX = 0;
+
+    function moveTo(point, duration, cb) {
+      setSquirrelPose(point.x >= squirrelX ? "run-right" : "run-left");
+      squirrelX = point.x;
+      squirrelEl.style.transition = "transform " + duration + "s ease-in-out";
+      squirrelEl.style.transform = "translate(" + point.x + "px, " + point.y + "px)";
+      var handled = false;
+      function done(e) {
+        if (e && e.propertyName !== "transform") return;
+        if (handled) return;
+        handled = true;
+        squirrelEl.removeEventListener("transitionend", done);
+        cb();
+      }
+      squirrelEl.addEventListener("transitionend", done);
+      setTimeout(done, duration * 1000 + 300);
+    }
+
+    function scheduleSquirrel() {
+      var delay = 15000 + Math.random() * 20000;
+      setTimeout(runSquirrelRoute, delay);
+    }
+
+    function runSquirrelRoute() {
+      if (
+        document.visibilityState !== "visible" ||
+        decorOff ||
+        document.documentElement.classList.contains("seasonal-decor-off")
+      ) {
+        scheduleSquirrel();
+        return;
+      }
+
+      var entry = randomSideEntry();
+      squirrelX = entry.x;
+      setSquirrelPose(entry.x < 0 ? "run-right" : "run-left");
+      squirrelEl.style.transition = "none";
+      squirrelEl.style.opacity = "0";
+      squirrelEl.style.transform = "translate(" + entry.x + "px, " + entry.y + "px)";
+      void squirrelEl.offsetWidth;
+      squirrelEl.style.transition = "opacity 0.3s ease";
+      squirrelEl.style.opacity = "1";
+
+      var perch = pickPerchPoint();
+      var exit = randomSideEntry();
+      var moveDuration = 2.6 + Math.random() * 1.8;
+
+      moveTo(perch, moveDuration, function () {
+        setSquirrelPose(perch.peekPose);
+        setTimeout(function () {
+          moveTo(exit, moveDuration, function () {
+            squirrelEl.style.transition = "opacity 0.3s ease";
+            squirrelEl.style.opacity = "0";
+            scheduleSquirrel();
+          });
+        }, 2000 + Math.random() * 2000);
+      });
+    }
+
+    scheduleSquirrel();
   }
 })();
