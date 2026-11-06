@@ -126,11 +126,29 @@
   var toggleBtn = document.createElement("button");
   toggleBtn.type = "button";
   toggleBtn.className = "seasonal-decor-toggle btn btn-ghost btn-small";
-  toggleBtn.textContent = decorOff ? "Turn on decorations" : "Turn off decorations";
+  // The label shows on desktop; phones get the icon alone (see seasonal.css)
+  // so the fixed button can't sit on top of page content or its buttons.
+  var toggleIcon = document.createElement("span");
+  toggleIcon.className = "seasonal-decor-toggle-icon";
+  toggleIcon.setAttribute("aria-hidden", "true");
+  toggleIcon.textContent = "\u2728";
+  var toggleLabel = document.createElement("span");
+  toggleLabel.className = "seasonal-decor-toggle-label";
+  toggleBtn.appendChild(toggleIcon);
+  toggleBtn.appendChild(toggleLabel);
+
+  function updateToggleLabel() {
+    var label = decorOff ? "Turn on decorations" : "Turn off decorations";
+    toggleLabel.textContent = label;
+    toggleBtn.setAttribute("aria-label", label);
+    toggleBtn.title = label;
+  }
+  updateToggleLabel();
+
   toggleBtn.addEventListener("click", function () {
     decorOff = !decorOff;
     applyDecorState();
-    toggleBtn.textContent = decorOff ? "Turn on decorations" : "Turn off decorations";
+    updateToggleLabel();
     try {
       if (window.localStorage) {
         if (decorOff) window.localStorage.setItem(DECOR_KEY, "1");

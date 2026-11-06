@@ -287,11 +287,36 @@ html.seasonal-decor-off .seasonal-bouncer {
   box-shadow: var(--shadow-soft);
 }
 
+.seasonal-decor-toggle-icon {
+  display: none;
+}
+
+/* Phones: a compact icon in the corner, so the fixed button stays clear of
+   the centered page content and calls to action. */
 @media (max-width: 600px) {
   .seasonal-decor-toggle {
     right: 0.6rem;
     bottom: 0.6rem;
-    font-size: 0.75rem;
+    z-index: 56;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .seasonal-decor-toggle-label {
+    display: none;
+  }
+  .seasonal-decor-toggle-icon {
+    display: block;
+    font-size: 1.25rem;
+    line-height: 1;
+  }
+  html.seasonal-decor-off .seasonal-decor-toggle-icon {
+    opacity: 0.45;
+    filter: grayscale(1);
   }
 }
 
@@ -326,7 +351,9 @@ html.seasonal-decor-off .seasonal-bouncer {
   animation-delay: var(--leaf-delay, 0s);
   animation-timing-function: linear;
   animation-iteration-count: 1;
-  animation-fill-mode: forwards;
+  /* "both" holds the off-screen start frame during the delay, so waiting
+     leaves don't sit parked on top of the header. */
+  animation-fill-mode: both;
   filter: drop-shadow(0 2px 4px rgba(58, 46, 38, 0.3));
 }
 
@@ -365,7 +392,7 @@ html.seasonal-decor-off .seasonal-pumpkin-cluster {
 
 @media (max-width: 600px) {
   .seasonal-pumpkin-cluster {
-    width: 104px;
+    width: 76px;
   }
 }
 
