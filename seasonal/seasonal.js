@@ -14,7 +14,8 @@
     var override = params.get("season");
     if (override) {
       if (override === "none") return null;
-      if (CONFIG[override]) return override;
+      // Own keys only, so "?season=constructor" etc. can't pick up built-ins.
+      if (Object.prototype.hasOwnProperty.call(CONFIG, override)) return override;
       return null;
     }
     var today = todayStr();
